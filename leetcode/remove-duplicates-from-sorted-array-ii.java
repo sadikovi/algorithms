@@ -6,7 +6,8 @@ public class Solution {
       if (nums[i] > nums[i - 1]) {
         nums[++index] = nums[i];
         counter = 1;
-      } else if (nums[i] == nums[i - 1] && counter < 2) {
+      } else if (counter < 2) {
+        // condition implies that nums[i] == nums[i - 1]
         nums[++index] = nums[i];
         counter++;
       }
