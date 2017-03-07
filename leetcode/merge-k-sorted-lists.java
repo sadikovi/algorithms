@@ -35,6 +35,7 @@ public class Solution {
 
   // Idea is to use previous solution for merging 2 lists and apply divide-and-conquer technique
   // by using partitioning. Problem becomes similar to mergesort.
+  // runtime is O(nlgk), where 'k' is number of lists and 'n' is total number of nodes
   public ListNode mergeKLists(ListNode[] lists) {
     return partition(lists, 0, lists.length - 1);
   }
