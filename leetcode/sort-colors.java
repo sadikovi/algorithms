@@ -59,4 +59,22 @@ public class Solution {
       }
     }
   }
+
+  // My another single-pass and constant space solution,
+  // slightly simplified version above
+  public void sortColors(int[] nums) {
+    int i = 0, j = nums.length - 1, colour = 0;
+    while (i < j && colour < 2) {
+      while (i < nums.length && nums[i] <= colour) i++;
+      while (j > 0 && nums[j] > colour) j--;
+      if (i < j) {
+        int tmp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = tmp;
+      } else {
+        colour++;
+        j = nums.length - 1;
+      }
+    }
+  }
 }
