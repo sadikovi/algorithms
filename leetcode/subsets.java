@@ -16,3 +16,26 @@ public class Solution {
     return sets;
   }
 }
+
+// Recursive solution for the problem
+public class Solution {
+  public List<List<Integer>> subsets(int[] nums) {
+    return subsets(nums, nums.length - 1);
+  }
+
+  private List<List<Integer>> subsets(int[] nums, int end) {
+    List<List<Integer>> all = new ArrayList<List<Integer>>();
+    if (end < 0) {
+      all.add(new ArrayList<Integer>());
+    } else {
+      List<List<Integer>> out = subsets(nums, end - 1);
+      all.addAll(out);
+      for (List<Integer> l : out) {
+        List<Integer> copy = new ArrayList<Integer>(l);
+        copy.add(nums[end]);
+        all.add(copy);
+      }
+    }
+    return all;
+  }
+}
