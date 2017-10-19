@@ -34,3 +34,27 @@ public class Solution {
     }
   }
 }
+
+// Another technique that exploits the fact that numbers start from 1 to n and array has length of
+// n + 1. Each number will correspond to it's position, meaning that n number will be at nth
+// position in array (n + 1 length). We swap elements until new coming element updates position
+// where element already equals index - this means duplicate.
+// Solution runs in O(n) time and O(1) space
+class Solution {
+  public int findDuplicate(int[] nums) {
+    // array has length >= 2
+    int curr = nums[0];
+    // this is basically while (true), but we will always terminate,
+    // because there is always a duplicate
+    while (curr > 0) {
+      if (nums[curr] != curr) {
+        int tmp = nums[curr];
+        nums[curr] = curr;
+        curr = tmp;
+      } else {
+        return curr;
+      }
+    }
+    return -1;
+  }
+}
