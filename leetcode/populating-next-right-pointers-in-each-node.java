@@ -6,15 +6,14 @@
  *     TreeLinkNode(int x) { val = x; }
  * }
  */
-// Fast solution with O(1) space
+// Fast solution with O(h) space, where h is height of the tree
 public class Solution {
   public void connect(TreeLinkNode root) {
-    if (root == null) return;
-    if (root.left == null || root.right == null) return;
+    if (root == null || root.left == null || root.right == null) return;
+    // we know that this is a perfect tree, left and right are not null
     root.left.next = root.right;
-    TreeLinkNode subtreeNext = root.next;
-    if (subtreeNext != null) {
-      root.right.next = subtreeNext.left;
+    if (root.next != null) {
+      root.right.next = root.next.left;
     }
     connect(root.left);
     connect(root.right);
