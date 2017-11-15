@@ -38,3 +38,32 @@ class Solution {
     return res;
   }
 }
+
+// Alternative solution, O(n * log n) time and O(n) space.
+class Solution {
+  public List<Interval> merge(List<Interval> intervals) {
+    Collections.sort(intervals, new Comparator<Interval>() {
+      public int compare(Interval a, Interval b) {
+        return Integer.compare(a.start, b.start);
+      }
+    });
+
+    List<Interval> res = new ArrayList<Interval>();
+    Interval curr = null;
+    for (Interval inter : intervals) {
+      if (curr == null) {
+        curr = inter;
+      } else if (curr.end < inter.start) {
+        res.add(curr);
+        curr = inter;
+      }
+      curr.end = Math.max(curr.end, inter.end);
+    }
+
+    if (curr != null) {
+      res.add(curr);
+    }
+
+    return res;
+  }
+}
