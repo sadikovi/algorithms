@@ -1,25 +1,19 @@
-// Fairly efficient solution, passes test cases, beats 31.04% of other solutions
-public class Solution {
+// Solution with memoization, beats 76.18% of submissions.
+// Runs in O(n^2 * m) time and O(n * m) space (?)
+class Solution {
   public List<String> wordBreak(String s, List<String> wordDict) {
-    return wordBreak(s, new HashSet<String>(wordDict), new HashMap<String, List<String>>());
+    return recur(s, wordDict, new HashMap<String, List<String>>());
   }
 
-  private List<String> wordBreak(String s, HashSet<String> wordDict, HashMap<String, List<String>> memo) {
+  private List<String> recur(String s, List<String> wordDict, HashMap<String, List<String>> memo) {
     if (memo.containsKey(s)) return memo.get(s);
     List<String> res = new ArrayList<String>();
-    for (int i = 0; i < s.length(); i++) {
-      String left = s.substring(0, i + 1);
-      if (wordDict.contains(left)) {
-        String right = s.substring(i + 1);
-        if (right.isEmpty()) {
-          res.add(left); // add left part as an entire sentence
-        } else {
-          List<String> sentences = wordBreak(right, wordDict, memo);
-          if (!sentences.isEmpty()) {
-            for (String str : sentences) {
-              res.add(left + " " + str);
-            }
-          }
+    for (String word : wordDict) {
+      if (s.equals(word)) {
+        res.add(word);
+      } else if (s.startsWith(word)) {
+        for (String sentence : recur(s.substring(word.length()), wordDict, memo)) {
+          res.add(word + " " + sentence);
         }
       }
     }

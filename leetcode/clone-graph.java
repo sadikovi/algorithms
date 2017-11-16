@@ -54,34 +54,27 @@ public class Solution {
  *     UndirectedGraphNode(int x) { label = x; neighbors = new ArrayList<UndirectedGraphNode>(); }
  * };
  */
-public class Solution {
+class Solution {
   public UndirectedGraphNode cloneGraph(UndirectedGraphNode node) {
     if (node == null) return null;
-    HashMap<Integer, UndirectedGraphNode> graph = copy(node);
-    return graph.get(node.label);
-  }
 
-  private HashMap<Integer, UndirectedGraphNode> copy(UndirectedGraphNode node) {
-    HashMap<Integer, UndirectedGraphNode> graph = new HashMap<Integer, UndirectedGraphNode>();
+    HashMap<UndirectedGraphNode, UndirectedGraphNode> map =
+      new HashMap<UndirectedGraphNode, UndirectedGraphNode>();
     LinkedList<UndirectedGraphNode> queue = new LinkedList<UndirectedGraphNode>();
+    map.put(node, new UndirectedGraphNode(node.label));
+
     queue.add(node);
     while (!queue.isEmpty()) {
-      UndirectedGraphNode current = queue.poll();
-      UndirectedGraphNode clone = getOrElse(graph, current.label);
-      for (UndirectedGraphNode child : current.neighbors) {
-        if (!graph.containsKey(child.label)) {
-          queue.add(child);
+      UndirectedGraphNode tmp = queue.remove();
+      UndirectedGraphNode clone = map.get(tmp);
+      for (UndirectedGraphNode target : tmp.neighbors) {
+        if (!map.containsKey(target)) {
+          map.put(target, new UndirectedGraphNode(target.label));
+          queue.add(target);
         }
-        clone.neighbors.add(getOrElse(graph, child.label));
+        clone.neighbors.add(map.get(target));
       }
     }
-    return graph;
-  }
-
-  private UndirectedGraphNode getOrElse(HashMap<Integer, UndirectedGraphNode> graph, int label) {
-    if (!graph.containsKey(label)) {
-      graph.put(label, new UndirectedGraphNode(label));
-    }
-    return graph.get(label);
+    return map.get(node);
   }
 }
