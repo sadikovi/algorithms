@@ -33,3 +33,37 @@ class Solution {
     return sb.toString();
   }
 }
+
+// My recursive solution.
+// Beats 28.35% of submissions
+class Solution {
+  public String fractionToDecimal(int numerator, int denominator) {
+    boolean pos = numerator >= 0 && denominator >= 0 || numerator <= 0 && denominator <= 0;
+    long num = Math.abs((long) numerator);
+    long denom = Math.abs((long) denominator);
+    StringBuilder sb = new StringBuilder();
+    if (!pos) sb.append("-");
+    sb.append(num / denom);
+    if (num % denom != 0) {
+      sb.append(".");
+      fraction((num % denom) * 10, denom, sb.length(), sb, new HashMap<String, Integer>());
+    }
+    return sb.toString();
+  }
+
+  private void fraction(long num, long denom, int pos, StringBuilder sb, HashMap<String, Integer> map) {
+    if (num % denom == 0) {
+        sb.append(num / denom);
+    } else {
+      Integer idx = map.get(num + "-" + denom);
+      if (idx != null) {
+        sb.insert(idx, "(");
+        sb.append(")");
+      } else {
+        map.put(num + "-" + denom, pos);
+        sb.append(num / denom);
+        fraction((num % denom) * 10, denom, pos+1, sb, map);
+      }
+    }
+  }
+}
