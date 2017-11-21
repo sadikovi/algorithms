@@ -40,4 +40,14 @@ public class Prime {
     }
     return next;
   }
+
+  public static boolean isPrime(int num) {
+    if (num < 2) return false;
+    int prime = 2;
+    while (prime * prime <= num) {
+      if (num % prime == 0) return false;
+      ++prime;
+    }
+    return true;
+  }
 }
