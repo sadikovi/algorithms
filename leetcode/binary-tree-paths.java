@@ -24,3 +24,47 @@ public class Solution {
     return lst;
   }
 }
+
+// Alternative solution, slower than solution above, runs in O(n^2) time where n is a number of
+// nodes in the tree (string length is the same order as number of nodes, actually larger by
+// constant factor).
+class Solution {
+  public List<String> binaryTreePaths(TreeNode root) {
+    List<String> res = new ArrayList<String>();
+    paths(root, "", res);
+    return res;
+  }
+
+  private void paths(TreeNode root, String path, List<String> res) {
+    if (root == null) return;
+    if (root.left == null && root.right == null) {
+      res.add(path + root.val);
+    } else {
+      paths(root.left, path + root.val + "->", res);
+      paths(root.right, path + root.val + "->", res);
+    }
+  }
+}
+
+// Improved solution similar to the first solution, but it is top-down and we use string builder.
+class Solution {
+  public List<String> binaryTreePaths(TreeNode root) {
+      List<String> res = new ArrayList<String>();
+      paths(root, new StringBuilder(), res);
+      return res;
+  }
+
+  private void paths(TreeNode root, StringBuilder path, List<String> res) {
+    if (root == null) return;
+    if (root.left == null && root.right == null) {
+      path.append(root.val);
+      res.add(path.toString());
+    } else {
+      path.append(root.val + "->");
+      int len = path.length();
+      paths(root.left, path, res);
+      path.setLength(len); // reset length
+      paths(root.right, path, res);
+    }
+  }
+}

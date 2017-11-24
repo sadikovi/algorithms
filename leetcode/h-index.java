@@ -1,5 +1,6 @@
 public class Solution {
-  // H-Index solution with O(n log n) time complexity and O(log n) space complexity (sorting).
+  // H-Index solution with O(n log n) time complexity and O(log n) or O(n) space complexity
+  // depending on sorting algorithm.
   public int hIndexSlower(int[] citations) {
     Arrays.sort(citations);
     int h = 0;

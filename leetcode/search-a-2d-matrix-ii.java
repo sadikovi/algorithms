@@ -3,16 +3,14 @@
 // array to find element.
 class Solution {
   public boolean searchMatrix(int[][] matrix, int target) {
-    if (matrix.length == 0 || matrix[0].length == 0) return false;
-    int rows = matrix.length;
-    int cols = matrix[0].length;
-    for (int i = 0; i < rows; i++) {
-      if (search(matrix[i], 0, cols - 1, target)) return true;
+    for (int i = 0; i < matrix.length; i++) {
+      if (search(matrix[i], target)) return true;
     }
     return false;
   }
 
-  private boolean search(int[] arr, int start, int end, int target) {
+  private boolean search(int[] arr, int target) {
+    int start = 0, end = arr.length-1;
     while (start <= end) {
       int mid = (start + end) / 2;
       if (arr[mid] == target) return true;
