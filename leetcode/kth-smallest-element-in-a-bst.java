@@ -1,3 +1,5 @@
+// Solution runs in O(n) time and O(n) space, but in average case only half of the tree will be
+// traversed and only Theta(log n) space is used.
 /**
  * Definition for a binary tree node.
  * public class TreeNode {
