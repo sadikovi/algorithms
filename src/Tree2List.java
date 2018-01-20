@@ -57,12 +57,36 @@ public class Tree2List {
     return curr;
   }
 
+  public static BiNode tree2list2(BiNode root) {
+    convert2(null, root, null);
+    while (root != null && root.node1 != null) {
+      root = root.node1;
+    }
+    return root;
+  }
+
+  public static void convert2(BiNode left, BiNode root, BiNode right) {
+    if (root == null) return;
+    BiNode node1 = root.node1;
+    if (root.node1 == null && left != null) {
+      root.node1 = left;
+      left.node2 = root;
+    }
+    BiNode node2 = root.node2;
+    if (root.node2 == null && right != null) {
+      root.node2 = right;
+      right.node1 = root;
+    }
+    convert2(left, node1, root);
+    convert2(root, node2, right);
+  }
+
   // == Testing ==
 
   public static void solution(int[] arr) {
     java.util.Arrays.sort(arr);
     BiNode bst = bst(arr, 0, arr.length - 1);
-    BiNode list = tree2list(bst);
+    BiNode list = tree2list2(bst); // tree2list
     System.out.println("List from left to right:");
     BiNode tmp = list;
     while (tmp != null) {
