@@ -129,6 +129,69 @@ public class WordDictionary {
   }
 }
 
+///////////////////////////////////////////////////////////////
+// Faster solution, beats 98.69% of submission
+///////////////////////////////////////////////////////////////
+
+class WordDictionary {
+
+  static class TrieNode {
+    TrieNode[] children;
+    boolean eow;
+
+    TrieNode() {
+      this.children = new TrieNode[26];
+      this.eow = false;
+    }
+  }
+
+  private TrieNode root;
+
+  /** Initialize your data structure here. */
+  public WordDictionary() {
+    this.root = new TrieNode();
+  }
+
+  /** Adds a word into the data structure. */
+  public void addWord(String word) {
+    TrieNode tmp = this.root;
+    for (int i = 0; i < word.length(); i++) {
+      int t = word.charAt(i) - 'a';
+      if (tmp.children[t] == null) {
+        tmp.children[t] = new TrieNode();
+      }
+      tmp = tmp.children[t];
+      if (i == word.length() - 1) {
+        tmp.eow = true;
+      }
+    }
+  }
+
+  private boolean search(TrieNode n, String word, int pos) {
+    for (int i = pos; i < word.length(); i++) {
+      int t = word.charAt(i) - 'a';
+      if (t < 0) {
+        boolean res = false;
+        for (TrieNode c : n.children) {
+          if (c != null) {
+            res = res || search(c, word, i + 1);
+          }
+        }
+        return res;
+      } else {
+        if (n.children[t] == null) return false;
+        n = n.children[t];
+      }
+    }
+    return n.eow;
+  }
+
+  /** Returns if the word is in the data structure. A word could contain the dot character '.' to represent any one letter. */
+  public boolean search(String word) {
+    return search(this.root, word, 0);
+  }
+}
+
 /**
  * Your WordDictionary object will be instantiated and called as such:
  * WordDictionary obj = new WordDictionary();

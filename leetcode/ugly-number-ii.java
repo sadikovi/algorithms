@@ -16,3 +16,32 @@ public class Solution {
     return dp[n - 1];
   }
 }
+
+// Solution with heaps (slower):
+class Solution {
+  public int nthUglyNumber(int n) {
+    LinkedList<Long> h2 = new LinkedList<Long>();
+    LinkedList<Long> h3 = new LinkedList<Long>();
+    LinkedList<Long> h5 = new LinkedList<Long>();
+    h2.add(1L);
+    long val = 0;
+    for (int i = 1; i <= n; i++) {
+      long v2 = h2.isEmpty() ? Integer.MAX_VALUE : h2.peek();
+      long v3 = h3.isEmpty() ? Integer.MAX_VALUE : h3.peek();
+      long v5 = h5.isEmpty() ? Integer.MAX_VALUE : h5.peek();
+      val = Math.min(v2, Math.min(v3, v5));
+      if (v2 == val) {
+        h2.remove();
+        h2.add(2L * val);
+        h3.add(3L * val);
+      } else if (v3 == val) {
+        h3.remove();
+        h3.add(3L * val);
+      } else {
+        h5.remove();
+      }
+      h5.add(5L * val);
+    }
+    return (int) val;
+  }
+}
