@@ -9,3 +9,6 @@ scalacOptions in ThisBuild ++= Seq("-unchecked", "-deprecation", "-feature")
 javacOptions in ThisBuild ++= Seq("-Xlint:unchecked")
 
 scalaSource in Compile := baseDirectory.value / "src"
+
+unmanagedBase := baseDirectory.value / "princeton"
+unmanagedSourceDirectories in Compile += baseDirectory.value / "princeton"

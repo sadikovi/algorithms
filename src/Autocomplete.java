@@ -1,3 +1,7 @@
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 // Autocomplete dictionary that maintains top k words for each prefix.
 // Every inserted word is updated as most recently used.
 public class Autocomplete {
