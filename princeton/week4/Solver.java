@@ -1,73 +1,96 @@
-import java.util.Comparator;
-import java.util.Stack;
+import java.util.ArrayList;
 
 import edu.princeton.cs.algs4.MinPQ;
 
 public class Solver {
-  private class Move implements Comparable<Move> {
-    private Move previous;
-    private Board board;
-    private int numMoves = 0;
+  private static class Move implements Comparable<Move> {
+    Board board;
+    Move previous;
+    int moves;
 
-    public Move(Board board) {
-      this.board = board;
-    }
-
-    public Move(Board board, Move previous) {
+    Move(Board board, Move previous, int moves) {
       this.board = board;
       this.previous = previous;
-      this.numMoves = previous.numMoves + 1;
+      this.moves = moves;
     }
 
-    public int compareTo(Move move) {
-      return (this.board.manhattan() - move.board.manhattan()) + (this.numMoves - move.numMoves);
+    @Override
+    public int compareTo(Move that) {
+      return
+        (this.board.manhattan() - that.board.manhattan()) +
+        (this.moves - that.moves);
     }
   }
 
-  private Move lastMove;
+  private final Move solution;
 
+  // find a solution to the initial board (using the A* algorithm)
   public Solver(Board initial) {
-    MinPQ<Move> moves = new MinPQ<Move>();
-    moves.insert(new Move(initial));
-
-    MinPQ<Move> twinMoves = new MinPQ<Move>();
-    twinMoves.insert(new Move(initial.twin()));
-
-    while (true) {
-      lastMove = expand(moves);
-      if (lastMove != null || expand(twinMoves) != null) return;
-    }
+    if (initial == null) throw new IllegalArgumentException();
+    this.solution = solve(initial);
   }
 
-  private Move expand(MinPQ<Move> moves) {
-    if (moves.isEmpty()) return null;
-    Move bestMove = moves.delMin();
-    if (bestMove.board.isGoal()) return bestMove;
-    for (Board neighbor : bestMove.board.neighbors()) {
-      if (bestMove.previous == null || !neighbor.equals(bestMove.previous.board)) {
-        moves.insert(new Move(neighbor, bestMove));
+  private Move solve(Board initial) {
+    MinPQ<Move> queue = new MinPQ<Move>();
+    queue.insert(new Move(initial, null, 0));
+
+    MinPQ<Move> queueTwin = new MinPQ<Move>();
+    queueTwin.insert(new Move(initial.twin(), null, 0));
+
+    while (!queue.isEmpty() && !queueTwin.isEmpty()) {
+      Move move = queue.delMin();
+      if (move.board.isGoal()) {
+        return move;
+      }
+
+      for (Board b : move.board.neighbors()) {
+        if (move.previous == null || !move.previous.board.equals(b)) {
+          queue.insert(new Move(b, move, move.moves + 1));
+        }
+      }
+
+      Move moveTwin = queueTwin.delMin();
+      if (moveTwin.board.isGoal()) {
+        return null;
+      }
+
+      for (Board b : moveTwin.board.neighbors()) {
+        if (moveTwin.previous == null || !moveTwin.previous.board.equals(b)) {
+          queueTwin.insert(new Move(b, moveTwin, moveTwin.moves + 1));
+        }
       }
     }
+
     return null;
   }
 
+  private void add(Move solution, ArrayList<Board> res) {
+    if (solution == null) return;
+    add(solution.previous, res);
+    res.add(solution.board);
+  }
+
+  // is the initial board solvable? (see below)
   public boolean isSolvable() {
-    return (lastMove != null);
+    return solution != null;
   }
 
+  // min number of moves to solve initial board; -1 if unsolvable
   public int moves() {
-    return isSolvable() ? lastMove.numMoves : -1;
+    if (!isSolvable()) return -1;
+    return solution.moves;
   }
 
+  // sequence of boards in a shortest solution; null if unsolvable
   public Iterable<Board> solution() {
     if (!isSolvable()) return null;
+    ArrayList<Board> boards = new ArrayList<Board>();
+    add(solution, boards);
+    return boards;
+  }
 
-    Stack<Board> moves = new Stack<Board>();
-    while(lastMove != null) {
-      moves.push(lastMove.board);
-      lastMove = lastMove.previous;
-    }
-
-    return moves;
+  // test client (see below)
+  public static void main(String[] args) {
+    // TODO.
   }
 }
