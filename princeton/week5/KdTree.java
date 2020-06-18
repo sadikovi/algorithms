@@ -23,10 +23,17 @@ public class KdTree {
   private int size;
 
   private static TreeNode insertNode(TreeNode root, Point2D p, boolean isX, RectHV rect, int[] size) {
+    // Empty slot, insert the point
     if (root == null) {
       size[0]++;
       return new TreeNode(p, isX, rect);
     }
+
+    // The same point as root
+    if (root.p.compareTo(p) == 0) {
+      return root;
+    }
+
     int cmp = root.isX ? Double.compare(p.x(), root.p.x()) : Double.compare(p.y(), root.p.y());
     if (cmp < 0) {
       if (root.isX) {
@@ -35,7 +42,7 @@ public class KdTree {
         rect = new RectHV(root.rect.xmin(), root.rect.ymin(), root.rect.xmax(), root.p.y());
       }
       root.left = insertNode(root.left, p, !root.isX, rect, size);
-    } else if (cmp > 0) {
+    } else {
       if (root.isX) {
         rect = new RectHV(root.p.x(), root.rect.ymin(), root.rect.xmax(), root.rect.ymax());
       } else {
@@ -66,14 +73,24 @@ public class KdTree {
 
   private static Point2D findNearest(TreeNode root, Point2D p, Point2D closest) {
     if (root != null) {
-      if (closest == null || closest.distanceTo(p) > root.p.distanceTo(p)) {
+      if (closest == null || closest.distanceSquaredTo(p) > root.p.distanceSquaredTo(p)) {
         closest = root.p;
       }
-      if (root.left != null && root.left.rect.distanceTo(p) <= closest.distanceTo(p)) {
-        closest = findNearest(root.left, p, closest);
-      }
-      if (root.right != null && root.right.rect.distanceTo(p) <= closest.distanceTo(p)) {
-        closest = findNearest(root.right, p, closest);
+
+      if (root.left != null && root.left.rect.contains(p)) {
+        if (root.left != null && root.left.rect.distanceSquaredTo(p) <= closest.distanceSquaredTo(p)) {
+          closest = findNearest(root.left, p, closest);
+        }
+        if (root.right != null && root.right.rect.distanceSquaredTo(p) <= closest.distanceSquaredTo(p)) {
+          closest = findNearest(root.right, p, closest);
+        }
+      } else {
+        if (root.right != null && root.right.rect.distanceSquaredTo(p) <= closest.distanceSquaredTo(p)) {
+          closest = findNearest(root.right, p, closest);
+        }
+        if (root.left != null && root.left.rect.distanceSquaredTo(p) <= closest.distanceSquaredTo(p)) {
+          closest = findNearest(root.left, p, closest);
+        }
       }
     }
     return closest;
@@ -151,11 +168,25 @@ public class KdTree {
 
   // unit testing of the methods (optional)
   public static void main(String[] args) {
-    RectHV rect = new RectHV(0.0, 0.0, 1.0, 1.0);
-    System.out.println(rect.intersects(new RectHV(1.1, 1.1, 2.0, 2.0)));
-    System.out.println(rect.intersects(new RectHV(0.4, 0.4, 0.6, 0.6)));
-    System.out.println(rect.intersects(new RectHV(-2.0, -2.0, 2.0, 2.0)));
+    // RectHV rect = new RectHV(0.0, 0.0, 1.0, 1.0);
+    // System.out.println(rect.intersects(new RectHV(1.1, 1.1, 2.0, 2.0)));
+    // System.out.println(rect.intersects(new RectHV(0.4, 0.4, 0.6, 0.6)));
+    // System.out.println(rect.intersects(new RectHV(-2.0, -2.0, 2.0, 2.0)));
+    //
+    // System.out.println(rect.distanceSquaredTo(new Point2D(0.0, 0.5)));
 
-    System.out.println(rect.distanceTo(new Point2D(0.0, 0.5)));
+    // KdTree tree = new KdTree();
+    // tree.insert(new Point2D(0.1875, 0.6875));
+    // System.out.println(tree.size());
+    // tree.insert(new Point2D(0.1875, 0.75));
+    // System.out.println(tree.size());
+
+    KdTree tree = new KdTree();
+    tree.insert(new Point2D(0.7, 0.2));
+    tree.insert(new Point2D(0.5, 0.4));
+    tree.insert(new Point2D(0.2, 0.3));
+    tree.insert(new Point2D(0.4, 0.7));
+    tree.insert(new Point2D(0.9, 0.6));
+    System.out.println("Answer: " + tree.nearest(new Point2D(0.47, 0.54)));
   }
 }

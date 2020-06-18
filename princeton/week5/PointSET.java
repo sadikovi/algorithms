@@ -61,9 +61,9 @@ public class PointSET {
     Point2D nearest = null;
     double dist = 0;
     for (Point2D d : this.bst) {
-      if (nearest == null || p.distanceTo(d) < dist) {
+      if (nearest == null || p.distanceSquaredTo(d) < dist) {
         nearest = d;
-        dist = p.distanceTo(d);
+        dist = p.distanceSquaredTo(d);
       }
     }
     return nearest;
