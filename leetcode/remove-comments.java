@@ -1,6 +1,18 @@
 // Time complexity is O(N * M), where N is the number of lines and M is the max length of a line.
 // String builder append is an amortised O(1) operation as well as appending to the list.
 // Space complexity is O(N * M), we need to store the entire input when there are no comments.
+//
+// Test cases:
+//
+// ["int main() { // comment1", "  int a = 1; /* line0", "  line1", "  line2", "  */ if (true) {", "    // line3", "    return 0; // line4", "  } else {", "    /* line5 */ return 1;", "  }", "  // line6", "} /* line7", "*/"]
+// ["// comment"]
+// ["/* comment */"]
+// ["/* comment", " comment */ "]
+// ["struct Node{", "    /*/ declare members;/**/", "    int size;", "    /**/int val;", "};"]
+// ["/* 8 * 5 */"]
+// ["/* 8 */ 5 */"]
+// ["/*/ comment/**/"]
+//
 class Solution {
   public List<String> removeComments(String[] source) {
     ArrayList<String> lines = new ArrayList<String>();
