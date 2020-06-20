@@ -77,20 +77,19 @@ public class KdTree {
         closest = root.p;
       }
 
-      if (root.left != null && root.left.rect.contains(p)) {
-        if (root.left != null && root.left.rect.distanceSquaredTo(p) <= closest.distanceSquaredTo(p)) {
-          closest = findNearest(root.left, p, closest);
-        }
-        if (root.right != null && root.right.rect.distanceSquaredTo(p) <= closest.distanceSquaredTo(p)) {
-          closest = findNearest(root.right, p, closest);
-        }
-      } else {
-        if (root.right != null && root.right.rect.distanceSquaredTo(p) <= closest.distanceSquaredTo(p)) {
-          closest = findNearest(root.right, p, closest);
-        }
-        if (root.left != null && root.left.rect.distanceSquaredTo(p) <= closest.distanceSquaredTo(p)) {
-          closest = findNearest(root.left, p, closest);
-        }
+      TreeNode first = root.left;
+      TreeNode second = root.right;
+
+      if (root.right != null && root.right.rect.contains(p)) {
+        first = root.right;
+        second = root.left;
+      }
+
+      if (first != null && first.rect.distanceSquaredTo(p) < closest.distanceSquaredTo(p)) {
+        closest = findNearest(first, p, closest);
+      }
+      if (second != null && second.rect.distanceSquaredTo(p) < closest.distanceSquaredTo(p)) {
+        closest = findNearest(second, p, closest);
       }
     }
     return closest;
@@ -181,12 +180,17 @@ public class KdTree {
     // tree.insert(new Point2D(0.1875, 0.75));
     // System.out.println(tree.size());
 
-    KdTree tree = new KdTree();
-    tree.insert(new Point2D(0.7, 0.2));
-    tree.insert(new Point2D(0.5, 0.4));
-    tree.insert(new Point2D(0.2, 0.3));
-    tree.insert(new Point2D(0.4, 0.7));
-    tree.insert(new Point2D(0.9, 0.6));
-    System.out.println("Answer: " + tree.nearest(new Point2D(0.47, 0.54)));
+    // String filename = args[0];
+    // In in = new In(filename);
+    // KdTree tree = new KdTree();
+    // while (!in.isEmpty()) {
+    //   String[] t = in.readLine().split("\\s+");
+    //   double x = Double.valueOf(t[1]); // in.readDouble();
+    //   double y = Double.valueOf(t[2]); // in.readDouble();
+    //   Point2D p = new Point2D(x, y);
+    //   map.put(p, t[0]);
+    //   tree.insert(p);
+    // }
+    // System.out.println("Answer: " + tree.nearest(new Point2D(0.21875, 0.40625)));
   }
 }
