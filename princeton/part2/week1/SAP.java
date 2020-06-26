@@ -113,13 +113,11 @@ public class SAP {
 
     while (!queue.isEmpty()) {
       Node curr = queue.poll();
+      if (visited[curr.id] != null && visited[curr.id].length < curr.length) continue;
       visited[curr.id] = curr;
 
       for (int n : graph.adj(curr.id)) {
-        if (visited[n] == null) {
-          visited[n] = new Node(n, curr.length + 1, curr);
-          queue.add(visited[n]);
-        }
+        queue.add(new Node(n, curr.length + 1, curr));
       }
     }
 

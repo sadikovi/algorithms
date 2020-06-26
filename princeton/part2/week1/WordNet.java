@@ -198,15 +198,13 @@ public class WordNet {
 
     while (!queue.isEmpty()) {
       Node curr = queue.poll();
+      if (visited[curr.v.id] != null && visited[curr.v.id].length < curr.length) continue;
       visited[curr.v.id] = curr;
 
       List<Vertex> neighbours = graph.get(curr.v);
       if (neighbours != null) {
         for (Vertex n : neighbours) {
-          if (visited[n.id] == null) {
-            visited[n.id] = new Node(n, curr.length + 1, curr);
-            queue.add(visited[n.id]);
-          }
+          queue.add(new Node(n, curr.length + 1, curr));
         }
       }
     }
