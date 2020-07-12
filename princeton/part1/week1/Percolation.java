@@ -2,7 +2,8 @@ import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 public class Percolation {
-  private final WeightedQuickUnionUF uf;
+  private final WeightedQuickUnionUF pf;
+  private final WeightedQuickUnionUF qf;
   private final boolean[][] open;
   private final int n;
   private final int p;
@@ -12,7 +13,8 @@ public class Percolation {
   // creates n-by-n grid, with all sites initially blocked
   public Percolation(int n) {
     if (n <= 0) throw new IllegalArgumentException();
-    this.uf = new WeightedQuickUnionUF(n * n + 2);
+    this.pf = new WeightedQuickUnionUF(n * n + 2);
+    this.qf = new WeightedQuickUnionUF(n * n + 2);
     this.p = n * n;
     this.q = n * n + 1;
     this.open = new boolean[n][n];
@@ -33,17 +35,33 @@ public class Percolation {
     numOpen++;
     open[row][col] = true;
 
-    if (row > 0 && open[row - 1][col]) uf.union(idx(row, col), idx(row - 1, col));
-    if (row < n - 1 && open[row + 1][col]) uf.union(idx(row, col), idx(row + 1, col));
-    if (col > 0 && open[row][col - 1]) uf.union(idx(row, col), idx(row, col - 1));
-    if (col < n - 1 && open[row][col + 1]) uf.union(idx(row, col), idx(row, col + 1));
-
     if (row == 0) {
-      uf.union(p, idx(row, col));
+      pf.union(p, idx(row, col));
     }
 
     if (row == n - 1) {
-      uf.union(q, idx(row, col));
+      qf.union(q, idx(row, col));
+    }
+
+    if (row > 0 && open[row - 1][col]) {
+      pf.union(idx(row, col), idx(row - 1, col));
+      qf.union(idx(row, col), idx(row - 1, col));
+    }
+    if (row < n - 1 && open[row + 1][col]) {
+      pf.union(idx(row, col), idx(row + 1, col));
+      qf.union(idx(row, col), idx(row + 1, col));
+    }
+    if (col > 0 && open[row][col - 1]) {
+      pf.union(idx(row, col), idx(row, col - 1));
+      qf.union(idx(row, col), idx(row, col - 1));
+    }
+    if (col < n - 1 && open[row][col + 1]) {
+      pf.union(idx(row, col), idx(row, col + 1));
+      qf.union(idx(row, col), idx(row, col + 1));
+    }
+
+    if (pf.find(p) == pf.find(idx(row, col)) && qf.find(q) == qf.find(idx(row, col))) {
+      pf.union(p, q);
     }
   }
 
@@ -58,7 +76,7 @@ public class Percolation {
   public boolean isFull(int row, int col) {
     checkArgument(row);
     checkArgument(col);
-    return open[row - 1][col - 1] && uf.find(p) == uf.find(idx(row - 1, col - 1));
+    return open[row - 1][col - 1] && pf.find(p) == pf.find(idx(row - 1, col - 1));
   }
 
   // returns the number of open sites
@@ -68,7 +86,7 @@ public class Percolation {
 
   // does the system percolate?
   public boolean percolates() {
-    return uf.find(p) == uf.find(q);
+    return pf.find(p) == pf.find(q);
   }
 
   private void checkArgument(int i) {
