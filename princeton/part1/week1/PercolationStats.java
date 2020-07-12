@@ -14,9 +14,7 @@ public class PercolationStats {
       while (!p.percolates()) {
         int row = 1 + StdRandom.uniform(n);
         int col = 1 + StdRandom.uniform(n);
-        if (!p.isOpen(row, col)) {
-          p.open(row, col);
-        }
+        p.open(row, col);
       }
       arr[i] = ((double) p.numberOfOpenSites()) / (n * n);
     }
