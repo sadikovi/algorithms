@@ -4,7 +4,9 @@ import edu.princeton.cs.algs4.BinaryStdOut;
 public class MoveToFront {
   private static void shift(char[] ascii, int idx) {
     char v = ascii[idx];
-    ascii[idx] = ascii[0];
+    for (int i = idx - 1; i >= 0; i--) {
+      ascii[i + 1] = ascii[i];
+    }
     ascii[0] = v;
   }
 
@@ -17,14 +19,21 @@ public class MoveToFront {
 
     while (!BinaryStdIn.isEmpty()) {
       char b = BinaryStdIn.readChar();
+
       int idx = -1;
-      for (int i = 0; i < ascii.length; i++) {
-        if (ascii[i] == b) {
-          idx = i;
-          BinaryStdOut.write((byte) i);
-          break;
+      if (ascii[b] == b) {
+        idx = b;
+        BinaryStdOut.write(b);
+      } else {
+        // search the character
+        for (int i = 0; i < ascii.length; i++) {
+          if (ascii[i] == b) {
+            idx = i;
+            BinaryStdOut.write((byte) i);
+          }
         }
       }
+
       if (idx < 0) throw new RuntimeException("Invalid index " + idx);
       shift(ascii, idx);
     }
